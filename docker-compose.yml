@@ -5,6 +5,7 @@ services:
     #image: bitcoin_server_msa:latest
     environment:
       MONGODB_HOST: mongodb
+      OPEN_AI_KEY: open_ai_key
     command: python -u app.py
     ports:
       - "5000:5000"
