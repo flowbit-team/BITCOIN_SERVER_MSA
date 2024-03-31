@@ -6,6 +6,7 @@ import data.cron_ai as soda
 from apscheduler.schedulers.background import BackgroundScheduler
 from db.mongodb.mongodb_handler import MongoDBHandler
 import os
+from machine.chatGPT_machine import ChatMachine
 
 rest_port= port = int(os.getenv("PORT", 8080))
 # eureka_client.init(eureka_server="http://flowbit-discovery:8761/eureka/",
@@ -86,7 +87,8 @@ def test_cron():
 
 if __name__ == "__main__":
 
-    init.init_code()
+    # init.init_code()
+    chat_machine = ChatMachine()
     port = int(os.getenv("PORT", 5000))
 
     sched = BackgroundScheduler(daemon=True)

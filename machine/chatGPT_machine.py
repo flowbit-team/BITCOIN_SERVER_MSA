@@ -13,8 +13,14 @@ class ChatMachine:
     def __init__(self, key="local"):
         self.openai = openai
         config = configparser.ConfigParser()
-        config.read('conf/config.ini')
-        self.openai.api_key = config['OPENAI']['key']
+        key = None
+        key = os.getenv("OPEN_AI_KEY", None)
+        #환경 변수 방어 코드
+        if key is None:
+            print("환경 변수 방어 코드 작동")
+            config.read('conf/config.ini')
+            key = config['OPENAI']['key']
+        self.openai.api_key = key
 
     def get_analysis_result(self, actual_data, predictd_data):
         print("come here")
