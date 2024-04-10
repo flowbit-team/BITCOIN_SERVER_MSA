@@ -1,4 +1,3 @@
-from machine.base_machine import Machine
 from pip._vendor import requests
 import json
 import datetime

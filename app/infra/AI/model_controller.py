@@ -1,11 +1,8 @@
-from tensorflow.keras.models import load_model
-from sklearn.preprocessing import MinMaxScaler
 import sys
 sys.path.append("C:\AGAPE\FLOW-BIT\projects\BITCOIN_SERVER_MSA")
 import os
-import numpy as np
 import json
-from AI.machine.flowbit_machine import FlowbitMachine
+from app.infra.AI.flowbit_machine import FlowbitMachine
 
 class ModelController:
     def __init__(self):

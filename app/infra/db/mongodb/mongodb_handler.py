@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 from pymongo.cursor import CursorType
 import configparser
-from db.base_handler import DBHandler
+from app.infra.db.base_handler import DBHandler
 import os
 
 class MongoDBHandler(DBHandler):

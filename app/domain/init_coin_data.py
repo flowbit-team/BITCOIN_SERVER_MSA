@@ -1,9 +1,8 @@
-from machine.bithumb_machine import BithumbMachine
-from machine.chatGPT_machine import ChatMachine
-from machine.chart_machine import ChartMachine
-from AI.machine.flowbit_machine import FlowbitMachine
-from db.mongodb.mongodb_handler import MongoDBHandler
-from AI.machine.model_controller import ModelController
+from app.infra.machine.bithumb_machine import BithumbMachine
+from app.infra.machine.chatGPT_machine import ChatMachine
+from app.domain.chart_machine import ChartMachine
+from app.infra.db.mongodb.mongodb_handler import MongoDBHandler
+from app.infra.AI.model_controller import ModelController
 import datetime
 from pytz import timezone
 

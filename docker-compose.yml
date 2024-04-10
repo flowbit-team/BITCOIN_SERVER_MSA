@@ -5,8 +5,8 @@ services:
     #image: bitcoin_server_msa:latest
     environment:
       MONGODB_HOST: mongodb
-      OPEN_AI_KEY: open_ai_key
-    command: python -u app.py
+      OPEN_AI_KEY: openAIKEY
+    command: python -u app/main.py
     ports:
       - "5000:5000"
     volumes:
@@ -20,8 +20,8 @@ services:
     hostname: mongodb
     environment:
       - MONGO_INITDB_DATABASE=AI
-      - MONGO_INITDB_ROOT_USERNAME=user_name
-      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_ROOT_USERNAME=flowbit
+      - MONGO_INITDB_ROOT_PASSWORD=flowbit1234!
     volumes:
       - .:/mongodb
     ports:

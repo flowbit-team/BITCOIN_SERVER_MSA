@@ -1,5 +1,4 @@
-from db.mysql.mysql_handler import MySqlHandler
-from db.mongodb.mongodb_handler import MongoDBHandler
+from app.infra.db.mongodb.mongodb_handler import MongoDBHandler
 
 class ChartMachine:
 
