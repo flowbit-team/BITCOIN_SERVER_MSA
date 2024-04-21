@@ -2,11 +2,12 @@ version: '3'
 services:
   web:
     build: .
+    platform: linux/amd64
     #image: bitcoin_server_msa:latest
     environment:
       MONGODB_HOST: mongodb
       OPEN_AI_KEY: openAIKEY
-    command: python -u app/main.py
+    command: python -u ./main.py
     ports:
       - "5000:5000"
     volumes:
@@ -16,7 +17,8 @@ services:
     # networks:
     #   - likelion_default
   mongodb:
-    image: mongo:latest
+    image: mongo:4.4.6
+    platform: linux/amd64
     hostname: mongodb
     environment:
       - MONGO_INITDB_DATABASE=AI
