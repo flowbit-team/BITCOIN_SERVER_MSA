@@ -7,7 +7,7 @@ services:
     environment:
       MONGODB_HOST: mongodb
       OPEN_AI_KEY: openAIKEY
-    command: python -u ./main.py
+    command: python -u main.py
     ports:
       - "5000:5000"
     volumes:
