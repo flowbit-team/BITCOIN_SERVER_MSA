@@ -87,7 +87,8 @@ def test_cron():
 
 if __name__ == "__main__":
 
-    # init.init_code()
+    init.init_code()
+    print("hello world")
     chat_machine = ChatMachine()
     port = int(os.getenv("PORT", 5000))
 
