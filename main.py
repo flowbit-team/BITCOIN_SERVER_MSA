@@ -7,7 +7,7 @@ import os
 from app.infra.machine.chatGPT_machine import ChatMachine
 from app.domain.init_coin_data import init_code
 
-rest_port= port = int(os.getenv("PORT", 8080))
+rest_port= port = int(os.getenv("PORT", 5000))
 # eureka_client.init(eureka_server="http://flowbit-discovery:8761/eureka/",
 #                    app_name="bitcoin-service",
 #                    instance_port=rest_port)
@@ -90,7 +90,7 @@ if __name__ == "__main__":
 
     init_code()
     chat_machine = ChatMachine()
-    port = int(os.getenv("PORT", 8080))
+    port = int(os.getenv("PORT", 5000))
 
     sched = BackgroundScheduler(daemon=True)
     sched.remove_all_jobs()

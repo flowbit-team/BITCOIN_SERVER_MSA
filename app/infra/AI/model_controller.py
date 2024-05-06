@@ -10,7 +10,7 @@ class ModelController:
         가장 먼저 호출되는 메서드
         config.ini에서 정보를 읽어옴
         """
-        with open('conf/config.json') as f:
+        with open('app/conf/config.json') as f:
             config = json.load(f)
 
         model_data = config['modelData']
