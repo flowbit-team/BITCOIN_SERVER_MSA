@@ -1,11 +1,8 @@
-from tensorflow.keras.models import load_model
-from sklearn.preprocessing import MinMaxScaler
 import sys
 sys.path.append("C:\AGAPE\FLOW-BIT\projects\BITCOIN_SERVER_MSA")
 import os
-import numpy as np
 import json
-from AI.machine.flowbit_machine import FlowbitMachine
+from app.infra.AI.flowbit_machine import FlowbitMachine
 
 class ModelController:
     def __init__(self):
@@ -13,7 +10,7 @@ class ModelController:
         가장 먼저 호출되는 메서드
         config.ini에서 정보를 읽어옴
         """
-        with open('conf/config.json') as f:
+        with open('app/conf/config.json') as f:
             config = json.load(f)
 
         model_data = config['modelData']

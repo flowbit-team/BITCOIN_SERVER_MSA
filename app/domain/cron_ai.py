@@ -1,15 +1,13 @@
 import sys
 import os
 
-from AI.machine.model_controller import ModelController
+from app.infra.AI.model_controller import ModelController
 
 sys.path.append(os.path.realpath(__file__)[0:-18]+"..")
-from machine.bithumb_machine import BithumbMachine
-from machine.chart_machine import ChartMachine
-from db.mongodb.mongodb_handler import MongoDBHandler
-import datetime
-from AI.machine.flowbit_machine import FlowbitMachine
-from machine.chatGPT_machine import ChatMachine
+from app.infra.machine.bithumb_machine import BithumbMachine
+from app.domain.chart_machine import ChartMachine
+from app.infra.db.mongodb.mongodb_handler import MongoDBHandler
+from app.infra.machine.chatGPT_machine import ChatMachine
 import datetime
 from pytz import timezone
 

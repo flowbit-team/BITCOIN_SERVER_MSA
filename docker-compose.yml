@@ -2,6 +2,11 @@ version: '3.8'
 services:
   web:
     build: .
+    platform: linux/amd64
+    #image: bitcoin_server_msa:latest
+    environment:
+      MONGODB_HOST: mongodb
+      OPEN_AI_KEY: openAIKEY
     image: bitcoin_server_msa:latest
     environment:
       MONGODB_HOST: mongodb
@@ -18,11 +23,12 @@ services:
     #   - likelion_default
   mongodb:
     image: mongo:4.4.6
+    platform: linux/amd64
     hostname: mongodb
     environment:
       - MONGO_INITDB_DATABASE=AI
-      - MONGO_INITDB_ROOT_USERNAME=user_name
-      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_ROOT_USERNAME=USER_NAME
+      - MONGO_INITDB_ROOT_PASSWORD=PASSWORD
     volumes:
       - .:/mongodb
     ports:

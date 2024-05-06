@@ -1,14 +1,14 @@
-from flask import Flask, request, render_template
-from machine.chart_machine import ChartMachine
-import py_eureka_client.eureka_client as eureka_client
-import data.init_coin_data as init
-import data.cron_ai as soda
+from flask import Flask, request
+from app.domain.chart_machine import ChartMachine
+import app.domain.cron_ai as soda
 from apscheduler.schedulers.background import BackgroundScheduler
-from db.mongodb.mongodb_handler import MongoDBHandler
+from app.infra.db.mongodb.mongodb_handler import MongoDBHandler
 import os
-from machine.chatGPT_machine import ChatMachine
+from app.infra.machine.chatGPT_machine import ChatMachine
+from app.domain.init_coin_data import init_code
 
-rest_port= port = int(os.getenv("PORT", 8080))
+rest_port= port = int(os.getenv("PORT", 5000))
+
 # eureka_client.init(eureka_server="http://flowbit-discovery:8761/eureka/",
 #                    app_name="bitcoin-service",
 #                    instance_port=rest_port)
@@ -86,9 +86,7 @@ def test_cron():
     return "this is my name"
 
 if __name__ == "__main__":
-
-    init.init_code()
-    print("hello world")
+    init_code()
     chat_machine = ChatMachine()
     port = int(os.getenv("PORT", 5000))
 
