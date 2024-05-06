@@ -5,6 +5,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from app.infra.db.mongodb.mongodb_handler import MongoDBHandler
 import os
 from app.infra.machine.chatGPT_machine import ChatMachine
+
+import json
 from app.domain.init_coin_data import init_code
 
 rest_port= port = int(os.getenv("PORT", 5000))
@@ -26,7 +28,7 @@ def home():
     """
     return html
 @app.route("/get_predict_value")
-def get_predict_value():
+def get_predict_value_old():
     ret = {}
     mongodbMachine = MongoDBHandler(db_name="AI", collection_name="actual_data")
 
@@ -79,6 +81,64 @@ def get_chart():
 
     return result
 
+@app.route("/predicted-value")
+def get_predict_value():
+    arg = request.args.get('currency')
+    mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
+
+    ret = {}
+    data = mongodbMachine.find_last_item(db_name=arg, collection_name="predicted_data")
+    print(data)
+
+
+    if "_id" in data:
+        del data["_id"]
+
+    data["predicted_krw"] = data["predicted_price"]
+    del data["predicted_price"]
+
+    ret["predicted_data"] = data
+    data = mongodbMachine.find_last_item(db_name=arg, collection_name="actual_data")
+
+    if "_id" in data:
+        del data["_id"]
+
+    ret["actual_data"] = data
+
+    return ret
+
+@app.route("/predicted-value-list")
+def get_all_predict_value():
+    with open('app/conf/config.json') as f:
+        config = json.load(f)
+    currency_list = config["currencyList"]
+    predicted_value_list = {}
+    for currency in currency_list:
+        arg = currency
+
+        mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
+
+        ret = {}
+        data = mongodbMachine.find_last_item(db_name=arg, collection_name="predicted_data")
+        print(data)
+
+        if "_id" in data:
+            del data["_id"]
+
+        data["predicted_krw"] = data["predicted_price"]
+        del data["predicted_price"]
+
+        ret["predicted_data"] = data
+        data = mongodbMachine.find_last_item(db_name=arg, collection_name="actual_data")
+
+        if "_id" in data:
+            del data["_id"]
+
+        ret["actual_data"] = data
+        predicted_value_list[arg] = ret
+
+    return predicted_value_list
+
 @app.route("/test_cron")
 def test_cron():
     soda.save_one_day_data()
@@ -86,7 +146,7 @@ def test_cron():
     return "this is my name"
 
 if __name__ == "__main__":
-    init_code()
+    # init_code()
     chat_machine = ChatMachine()
     port = int(os.getenv("PORT", 5000))
 
