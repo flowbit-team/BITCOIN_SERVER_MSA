@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 services:
   web:
     build: .
@@ -7,6 +7,10 @@ services:
     environment:
       MONGODB_HOST: mongodb
       OPEN_AI_KEY: openAIKEY
+    image: bitcoin_server_msa:latest
+    environment:
+      MONGODB_HOST: mongodb
+      OPEN_AI_KEY: open_ai_key
     command: python -u main.py
     ports:
       - "5000:5000"
@@ -14,6 +18,7 @@ services:
       - .:/app
     links:
       - mongodb
+#    platform: linux/amd64
     # networks:
     #   - likelion_default
   mongodb:
@@ -22,12 +27,13 @@ services:
     hostname: mongodb
     environment:
       - MONGO_INITDB_DATABASE=AI
-      - MONGO_INITDB_ROOT_USERNAME=flowbit
-      - MONGO_INITDB_ROOT_PASSWORD=flowbit1234!
+      - MONGO_INITDB_ROOT_USERNAME=USER_NAME
+      - MONGO_INITDB_ROOT_PASSWORD=PASSWORD
     volumes:
       - .:/mongodb
     ports:
       - 27017:27017
+#    platform: linux/amd64
 #     networks:
 #       - likelion_default
 # networks:

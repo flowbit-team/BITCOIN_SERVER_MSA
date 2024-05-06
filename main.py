@@ -8,6 +8,7 @@ from app.infra.machine.chatGPT_machine import ChatMachine
 from app.domain.init_coin_data import init_code
 
 rest_port= port = int(os.getenv("PORT", 5000))
+
 # eureka_client.init(eureka_server="http://flowbit-discovery:8761/eureka/",
 #                    app_name="bitcoin-service",
 #                    instance_port=rest_port)
@@ -85,9 +86,6 @@ def test_cron():
     return "this is my name"
 
 if __name__ == "__main__":
-
-    print("실행됨")
-
     init_code()
     chat_machine = ChatMachine()
     port = int(os.getenv("PORT", 5000))
