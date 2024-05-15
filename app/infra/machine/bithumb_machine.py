@@ -57,8 +57,9 @@ class BithumbMachine:
 
         return [[eval(sublist[2]) + 0.0] for sublist in res["data"][-15:]]
 
-    def get_last_data(self):
+    def get_last_data(self, coin_currency):
         url = "https://api.bithumb.com/public/candlestick/BTC_KRW/24h"
+        url = "https://api.bithumb.com/public/candlestick/" + coin_currency + "_KRW/24h"
 
         headers = {"accept": "application/json"}
         response = requests.get(url, headers=headers)

@@ -40,7 +40,7 @@ def save_one_day_data():
         mongodbMachine = MongoDBHandler(mode="remote", db_name=database_name, collection_name="actual_data")
 
         print("insert last actual data to database")
-        data = bithumbMachine.get_last_data()
+        data = bithumbMachine.get_last_data(coin_currency=database_name)
         mongodbMachine.insert_item(data=data, database_name=database_name, collection_name="actual_data")
     
         print("start price prediction")

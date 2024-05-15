@@ -103,8 +103,8 @@ class ChartMachine:
         print(len(predicted_data_list))
 
         chart_data["datas"] = [
-            {"label" : "실제 BTC", "datas" : actual_data_list[start_index + 1:]}, 
-            {"label" : "예측 BTC", "datas" : predicted_data_list}
+            {"label" : "실제 " + db_name, "datas" : actual_data_list[start_index + 1:]},
+            {"label" : "예측 " + db_name, "datas" : predicted_data_list}
         ]
 
         return chart_data
@@ -189,8 +189,8 @@ class ChartMachine:
         print(len(predicted_data_list))
 
         chart_data["datas"] = [
-            {"label" : "실제 BTC", "datas" : actual_data_list[start_index + 1:]},
-            {"label" : "예측 BTC", "datas" : predicted_data_list}
+            {"label" : "실제 " + db_name, "datas" : actual_data_list[start_index + 1:]},
+            {"label" : "예측 " + db_name, "datas" : predicted_data_list}
         ]
 
         return chart_data
