@@ -20,11 +20,11 @@ class ChartMachine:
         for i in actual_data:
             print("일단 여기까지 옴...")
             i["_id"] = str(i["_id"])
-            actual_data_str += str(i)
+            actual_data_str += str(i["close_price"]) + ","
 
         for i in predicted_data:
             i["_id"] = str(i["_id"])
-            predicted_data_str += str(i)
+            predicted_data_str += str(i["predicted_price"]) + ","
         
         return actual_data_str, predicted_data_str
 

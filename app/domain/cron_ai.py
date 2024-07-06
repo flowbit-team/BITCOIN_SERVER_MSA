@@ -64,6 +64,7 @@ def save_one_day_data():
         chat_machine = ChatMachine()
 
         actual_data_str, predicted_data_str = chart_machine.get_analysis_chart()
+        # print(actual_data_str, predicted_data_str)
         res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
         print("end price analysis")
 
