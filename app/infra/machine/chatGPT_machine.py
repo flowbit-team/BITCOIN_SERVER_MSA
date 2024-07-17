@@ -24,8 +24,8 @@ class ChatMachine:
 
     def get_analysis_result(self, actual_data, predictd_data):
         print("come here")
-        prompt = ("다음은 실제 가격 데이터야.\n" + actual_data + "\n" + "다음은 예측 가격 데이터야.\n" + predictd_data + "\n\n" 
-        + "두 데이블을 비교해서 예측 가격 테이블이 실제 가격테이블의 추세를 잘 파악하는지 분석해줘. 시작멘트와 끝멘트좀 하지마! 오직 답변만 해줘.")
+        prompt = ("Here is the actual price data.\n" + actual_data + "\n" + "Here is the predicted price data.\n" + predictd_data + "\n\n"
+        + "Compare the two tables and analyze whether the predicted price table accurately captures the trend of the actual price table. Please stop using the opening and ending comments! Just answer me.")
         res = ""
 
         if prompt != "":
