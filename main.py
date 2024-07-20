@@ -148,12 +148,17 @@ def test_cron():
 
 if __name__ == "__main__":
     init_code()
-    chat_machine = ChatMachine()
+    # chat_machine = ChatMachine()
     port = int(os.getenv("PORT", 5000))
 
     sched = BackgroundScheduler(daemon=True)
     sched.remove_all_jobs()
     sched.add_job(soda.save_one_day_data, 'cron', hour=0, minute=1)
     sched.start()
+
+    # jobs = sched.get_jobs()
+    # print("start print job")
+    # for job in jobs:
+    #     print(f"Job ID: {job.id}, Next Run Time: {job.next_run_time}")
     
     app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
