@@ -68,14 +68,14 @@ def init_code():
         
         print("end price prediction")
 
-        print("start price analysis")
-        actual_data_str, predicted_data_str = chart_machine.get_analysis_chart(database_name=database_name)
-        res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
-        analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
-        print("end price analysis")
+        # print("start price analysis")
+        # actual_data_str, predicted_data_str = chart_machine.get_analysis_chart(database_name=database_name)
+        # res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
+        # analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
+        # print("end price analysis")
     
-        print("insert analysis data to database")
-        mongodbMachine.insert_item(data = analysis_data, database_name=database_name, collection_name="analysis_data")
+        # print("insert analysis data to database")
+        # mongodbMachine.insert_item(data = analysis_data, database_name=database_name, collection_name="analysis_data")
     
     for model_data in modelController.get_model_list():
 

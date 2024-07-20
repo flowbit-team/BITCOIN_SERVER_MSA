@@ -59,19 +59,19 @@ def save_one_day_data():
         print("insert predicted data to database")
         mongodbMachine.insert_item(data=one_day_data, database_name=database_name, collection_name="predicted_data")
 
-        print("start price analysis")
-        chart_machine = ChartMachine()
-        chat_machine = ChatMachine()
-
-        actual_data_str, predicted_data_str = chart_machine.get_analysis_chart()
-        # print(actual_data_str, predicted_data_str)
-        res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
-        print("end price analysis")
-
-        analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
-
-        print("insert analysis data to database")
-        mongodbMachine.insert_item(data = analysis_data, database_name=database_name, collection_name="analysis_data")
+        # print("start price analysis")
+        # chart_machine = ChartMachine()
+        # chat_machine = ChatMachine()
+        #
+        # actual_data_str, predicted_data_str = chart_machine.get_analysis_chart()
+        # # print(actual_data_str, predicted_data_str)
+        # res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
+        # print("end price analysis")
+        #
+        # analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
+        #
+        # print("insert analysis data to database")
+        # mongodbMachine.insert_item(data = analysis_data, database_name=database_name, collection_name="analysis_data")
 
     #todo: one day ai 부분 객체로 바꾸기
     for model_data in modelController.get_model_list():
