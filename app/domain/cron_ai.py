@@ -52,7 +52,9 @@ def save_one_day_data():
         result = flowbitMachine.get_predict_value(data)
 
         one_day_data = {}
-        one_day_data["timestamp"] = (datetime.date.today() + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+        print("datetime.date.today() : " , datetime.date.today())
+        # one_day_data["timestamp"] = (datetime.date.today() + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+        one_day_data["timestamp"] = (datetime.date.today()).strftime("%Y-%m-%d")
         one_day_data["predicted_price"] = result + 0.0
         print("end price prediction")
 
@@ -104,7 +106,6 @@ def save_one_day_data():
         
         print("start price prediction")
 
-        
         date_string = data[-1]["timestamp"]
         data = pre_data(data)
         data = flowbitMachine.data_processing(data)
@@ -113,7 +114,8 @@ def save_one_day_data():
         
         date_format = "%Y-%m-%d"
 
-        server_date = server_timezone.localize(datetime.datetime.strptime(date_string, date_format))
+        # server_date = server_timezone.localize(datetime.datetime.strptime(date_string, date_format))
+        server_date = datetime.date.today()
         print(server_date)
         one_day_later = (server_date + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
         result_data = []
@@ -124,7 +126,9 @@ def save_one_day_data():
 
             price = result[index]
             date = (server_date + datetime.timedelta(days=(index + 1))).strftime("%Y-%m-%d")
-            
+            print("server_date : ", server_date)
+            print("date : ", date)
+
             one_day_data["timestamp"] = date
             one_day_data["predicted_price"] = int(price)
 
