@@ -1,5 +1,5 @@
 from app.infra.machine.bithumb_machine import BithumbMachine
-from app.infra.machine.chatGPT_machine import ChatMachine
+# from app.infra.machine.chatGPT_machine import ChatMachine
 from app.domain.chart_machine import ChartMachine
 from app.infra.db.mongodb.mongodb_handler import MongoDBHandler
 from app.infra.AI.model_controller import ModelController
@@ -19,7 +19,7 @@ def init_code():
     print("start initializing")
     print("start prev data")
     chart_machine = ChartMachine()
-    chat_machine = ChatMachine()
+    # chat_machine = ChatMachine()
     bithumbMachine = BithumbMachine()
     modelController = ModelController()
     for model_data in modelController.get_model_list():

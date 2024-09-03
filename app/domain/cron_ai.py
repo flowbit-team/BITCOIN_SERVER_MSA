@@ -5,9 +5,9 @@ from app.infra.AI.model_controller import ModelController
 
 sys.path.append(os.path.realpath(__file__)[0:-18]+"..")
 from app.infra.machine.bithumb_machine import BithumbMachine
-from app.domain.chart_machine import ChartMachine
+# from app.domain.chart_machine import ChartMachine
 from app.infra.db.mongodb.mongodb_handler import MongoDBHandler
-from app.infra.machine.chatGPT_machine import ChatMachine
+# from app.infra.machine.chatGPT_machine import ChatMachine
 import datetime
 from pytz import timezone
 
@@ -40,7 +40,8 @@ def save_one_day_data():
         mongodbMachine = MongoDBHandler(mode="remote", db_name=database_name, collection_name="actual_data")
 
         print("insert last actual data to database")
-        data = bithumbMachine.get_last_data(coin_currency=database_name)
+        data = bithumbMachine.get_all_data(coin_currency=database_name)[-2]
+
         mongodbMachine.insert_item(data=data, database_name=database_name, collection_name="actual_data")
     
         print("start price prediction")
@@ -125,7 +126,7 @@ def save_one_day_data():
             one_day_data = {}
 
             price = result[index]
-            date = (server_date + datetime.timedelta(days=(index + 1))).strftime("%Y-%m-%d")
+            date = (server_date + datetime.timedelta(days=(index + 2))).strftime("%Y-%m-%d")
             print("server_date : ", server_date)
             print("date : ", date)
 
