@@ -1,16 +1,13 @@
-version: '3.8'
+version: '3'
 services:
   web:
     build: .
-    platform: linux/amd64
+#    platform: linux/amd64
     #image: bitcoin_server_msa:latest
     environment:
       MONGODB_HOST: mongodb
       OPEN_AI_KEY: openAIKEY
-    image: bitcoin_server_msa:latest
-    environment:
-      MONGODB_HOST: mongodb
-      OPEN_AI_KEY: open_ai_key
+      TZ: "Asia/Seoul"  # timezone 설정 부분
     command: python -u main.py
     ports:
       - "5000:5000"
@@ -18,12 +15,11 @@ services:
       - .:/app
     links:
       - mongodb
-#    platform: linux/amd64
     # networks:
     #   - likelion_default
   mongodb:
     image: mongo:4.4.6
-    platform: linux/amd64
+#    platform: linux/amd64
     hostname: mongodb
     environment:
       - MONGO_INITDB_DATABASE=AI
@@ -33,7 +29,6 @@ services:
       - .:/mongodb
     ports:
       - 27017:27017
-#    platform: linux/amd64
 #     networks:
 #       - likelion_default
 # networks:
