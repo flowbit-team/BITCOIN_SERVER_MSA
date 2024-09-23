@@ -41,7 +41,7 @@ def init_code():
         print("end reset database")
 
         print("insert all actual data to database")
-        datas = bithumbMachine.get_all_data(coin_currency=database_name)
+        datas = bithumbMachine.get_all_data(coin_currency=database_name)[0:-1]
         mongodbMachine.insert_items(datas=datas, database_name=database_name, collection_name="actual_data")
     
         print("start price prediction")
@@ -97,7 +97,7 @@ def init_code():
         print("start price prediction")
 
         
-        date_string = data[-1]["timestamp"]
+        date_string = data[-2]["timestamp"]
         data = pre_data(data)
         data = flowbitMachine.data_processing(data)
         result = flowbitMachine.get_predict_value_for_list(data)

@@ -153,7 +153,7 @@ if __name__ == "__main__":
 
     sched = BackgroundScheduler(daemon=True)
     sched.remove_all_jobs()
-    sched.add_job(soda.save_one_day_data, 'cron', hour=0, minute=1)
+    sched.add_job(soda.save_one_day_data, 'cron', hour=0, minute=2)
     sched.start()
 
     # jobs = sched.get_jobs()

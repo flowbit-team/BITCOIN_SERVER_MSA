@@ -118,15 +118,16 @@ def save_one_day_data():
         # server_date = server_timezone.localize(datetime.datetime.strptime(date_string, date_format))
         server_date = datetime.date.today()
         print(server_date)
-        one_day_later = (server_date + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+        # one_day_later = (server_date + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
         result_data = []
-        predicted_price_list =[int(x) for x in  result.tolist()]
+        # predicted_price_list =[int(x) for x in  result.tolist()]
 
-        for index in range(result_data_size):
+        for index in range(1, result_data_size):
             one_day_data = {}
 
             price = result[index]
-            date = (server_date + datetime.timedelta(days=(index + 2))).strftime("%Y-%m-%d")
+            print(index)
+            date = (server_date + datetime.timedelta(days=(index))).strftime("%Y-%m-%d")
             print("server_date : ", server_date)
             print("date : ", date)
 
