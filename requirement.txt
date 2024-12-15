@@ -1,4 +1,5 @@
 flask
+pytz
 pymongo
 pymysql
 apscheduler
@@ -7,3 +8,4 @@ scikit-learn
 numpy
 py_eureka_client
 openai==0.28
+groq
