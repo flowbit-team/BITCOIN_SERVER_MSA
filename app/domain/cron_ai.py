@@ -5,13 +5,17 @@ from app.infra.AI.model_controller import ModelController
 
 sys.path.append(os.path.realpath(__file__)[0:-18]+"..")
 from app.infra.machine.bithumb_machine import BithumbMachine
-# from app.domain.chart_machine import ChartMachine
+from app.domain.chart_machine import ChartMachine
 from app.infra.db.mongodb.mongodb_handler import MongoDBHandler
 # from app.infra.machine.chatGPT_machine import ChatMachine
+from app.infra.machine.groq_machine import GroqMachine
 import datetime
 from pytz import timezone
 
 server_timezone = timezone('Asia/Seoul')
+
+groqMachine = GroqMachine()
+chartMachine = ChartMachine()
 
 def data_processing(data):
     ret = []
@@ -41,7 +45,10 @@ def save_one_day_data():
 
         print("insert last actual data to database")
         data = bithumbMachine.get_all_data(coin_currency=database_name)[-2]
+        print("coin_currency: ", database_name)
+        print("data: ", data)
 
+        print("insert last actual data to database")
         mongodbMachine.insert_item(data=data, database_name=database_name, collection_name="actual_data")
     
         print("start price prediction")
@@ -60,21 +67,24 @@ def save_one_day_data():
         print("end price prediction")
 
         print("insert predicted data to database")
+        print("coin_currency: ", database_name)
+        print("data: ", one_day_data)
         mongodbMachine.insert_item(data=one_day_data, database_name=database_name, collection_name="predicted_data")
 
-        # print("start price analysis")
+        print("start price analysis")
         # chart_machine = ChartMachine()
         # chat_machine = ChatMachine()
         #
-        # actual_data_str, predicted_data_str = chart_machine.get_analysis_chart()
-        # # print(actual_data_str, predicted_data_str)
+        actual_data_str, predicted_data_str = chartMachine.get_analysis_chart()
+        print(actual_data_str, predicted_data_str)
         # res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
-        # print("end price analysis")
+        res = groqMachine.get_analysis_result(actual_data_str, predicted_data_str)
+        print("end price analysis")
         #
-        # analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
+        analysis_data = {"response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
         #
         # print("insert analysis data to database")
-        # mongodbMachine.insert_item(data = analysis_data, database_name=database_name, collection_name="analysis_data")
+        mongodbMachine.insert_item(data = analysis_data, database_name=database_name, collection_name="analysis_data")
 
     #todo: one day ai 부분 객체로 바꾸기
     for model_data in modelController.get_model_list():
@@ -117,7 +127,7 @@ def save_one_day_data():
 
         # server_date = server_timezone.localize(datetime.datetime.strptime(date_string, date_format))
         server_date = datetime.date.today()
-        print(server_date)
+        print("multiple predict ", server_date)
         # one_day_later = (server_date + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
         result_data = []
         # predicted_price_list =[int(x) for x in  result.tolist()]
