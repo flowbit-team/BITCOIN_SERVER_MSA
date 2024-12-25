@@ -5,8 +5,12 @@ from app.infra.db.mongodb.mongodb_handler import MongoDBHandler
 from app.infra.AI.model_controller import ModelController
 import datetime
 from pytz import timezone
+from app.infra.machine.groq_machine import GroqMachine
 
 server_timezone = timezone('Asia/Seoul')
+
+groqMachine = GroqMachine()
+chartMachine = ChartMachine()
 
 def pre_data(data):
     result = []
@@ -68,14 +72,17 @@ def init_code():
         
         print("end price prediction")
 
-        # print("start price analysis")
-        # actual_data_str, predicted_data_str = chart_machine.get_analysis_chart(database_name=database_name)
+        actual_data_str, predicted_data_str = chartMachine.get_analysis_chart()
+        print(actual_data_str, predicted_data_str)
         # res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
-        # analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
-        # print("end price analysis")
-    
+        res = groqMachine.get_analysis_result(actual_data_str, predicted_data_str, coin_currency=database_name)
+        print(res)
+        print("end price analysis")
+        #
+        analysis_data = {"response": res, "timestamp": datetime.date.today().strftime("%Y-%m-%d")}
+        #
         # print("insert analysis data to database")
-        # mongodbMachine.insert_item(data = analysis_data, database_name=database_name, collection_name="analysis_data")
+        mongodbMachine.insert_item(data=analysis_data, database_name=database_name, collection_name="analysis_data")
     
     for model_data in modelController.get_model_list():
 

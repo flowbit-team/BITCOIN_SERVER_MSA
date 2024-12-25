@@ -78,7 +78,7 @@ def save_one_day_data():
         actual_data_str, predicted_data_str = chartMachine.get_analysis_chart()
         print(actual_data_str, predicted_data_str)
         # res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
-        res = groqMachine.get_analysis_result(actual_data_str, predicted_data_str)
+        res = groqMachine.get_analysis_result(actual_data_str, predicted_data_str, database_name)
         print("end price analysis")
         #
         analysis_data = {"response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
