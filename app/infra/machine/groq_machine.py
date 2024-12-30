@@ -18,15 +18,28 @@ class GroqMachine:
     def get_prompt_format(self):
         formatted_prompt = """
         <|begin_of_text|><|start_header_id|>system<|end_header_id|>
-        너는 {coin_currency} 코인의 예측 가격과 실제 가격을 가지고 분석해주는 AI 분석 도우미야.
+        너는 가상화폐의 예측 가격과 실제 가격을 가지고 분석해주는 AI 분석 도우미야.
         <|eot_id|>
         
         <|start_header_id|>user<|end_header_id|>
+        이번에 분석할 코인의 종류는 {coin_currency}야.
         다음은 예측 가격들이야. {predicted_data}
         다음은 실제 가격들이야. {actual_data}
         
-        예측 가격이 실제 가격의 추세를 잘 따라가고 있는지를 MAE와 상관계수 지표를 상용해서 분석해줘.
-        
+        예측 가격이 실제 가격의 추세를 잘 파악하고 있는지를 분석해줘.
+
+        답변형식은 다음과 같이 해줘
+
+        (인사말)
+
+        (MAE 분석 내용)
+
+        (Correlation Coefficient 분석 내용)
+
+        (종합 의견)
+
+        대답은 한국어로만 작성해줘.
+
         모든 대답은 한글로해줘.
         <|eot_id|>
         

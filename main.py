@@ -18,6 +18,7 @@ rest_port= port = int(os.getenv("PORT", 5000))
 #                    instance_port=rest_port)
 app = Flask(__name__)
 chart_machine = ChartMachine()
+mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
 
 @app.route("/")
 def home():
@@ -33,7 +34,7 @@ def home():
 @app.route("/get_predict_value")
 def get_predict_value_old():
     ret = {}
-    mongodbMachine = MongoDBHandler(db_name="AI", collection_name="actual_data")
+    # mongodbMachine = MongoDBHandler(db_name="AI", collection_name="actual_data")
 
     data = mongodbMachine.find_last_item(db_name="AI", collection_name="predicted_data")
     del data["_id"]
@@ -64,8 +65,9 @@ def get_all_chart():
 @app.route("/get_chart_analysis")
 def get_chart_analysis():
 
-    mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
-    data = mongodbMachine.find_last_item(db_name="BTC", collection_name="analysis_data")
+
+    arg = request.args.get('currency')
+    data = mongodbMachine.find_last_item(db_name=arg, collection_name="analysis_data")
     
     del data["_id"]
     
@@ -87,7 +89,7 @@ def get_chart():
 @app.route("/predicted-value")
 def get_predict_value():
     arg = request.args.get('currency')
-    mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
+    # mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
 
     ret = {}
     data = mongodbMachine.find_last_item(db_name=arg, collection_name="predicted_data")
@@ -119,7 +121,7 @@ def get_all_predict_value():
     for currency in currency_list:
         arg = currency
 
-        mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
+        # mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
 
         ret = {}
         data = mongodbMachine.find_last_item(db_name=arg, collection_name="predicted_data")
