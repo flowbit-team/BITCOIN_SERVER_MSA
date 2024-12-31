@@ -4,6 +4,7 @@ import app.domain.cron_ai as soda
 # import py_eureka_client.eureka_client as eureka_client
 from apscheduler.schedulers.background import BackgroundScheduler
 from app.infra.db.mongodb.mongodb_handler import MongoDBHandler
+from app.infra.machine.groq_machine import GroqMachine
 import os
 # from app.infra.machine.chatGPT_machine import ChatMachine
 
@@ -16,6 +17,8 @@ rest_port= port = int(os.getenv("PORT", 5000))
 #                    app_name="bitcoin-service",
 #                    instance_port=rest_port)
 app = Flask(__name__)
+chart_machine = ChartMachine()
+mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
 
 @app.route("/")
 def home():
@@ -31,7 +34,7 @@ def home():
 @app.route("/get_predict_value")
 def get_predict_value_old():
     ret = {}
-    mongodbMachine = MongoDBHandler(db_name="AI", collection_name="actual_data")
+    # mongodbMachine = MongoDBHandler(db_name="AI", collection_name="actual_data")
 
     data = mongodbMachine.find_last_item(db_name="AI", collection_name="predicted_data")
     del data["_id"]
@@ -49,21 +52,22 @@ def get_predict_value_old():
 
 @app.route("/get_basic_chart")
 def get_basic_chart():
-    chart_machine = ChartMachine()
+    # chart_machine = ChartMachine()
 
     return chart_machine.get_basic_chart()
 
 @app.route("/get_all_chart")
 def get_all_chart():
-    chart_machine = ChartMachine()
+#     chart_machine = ChartMachine()
 
     return chart_machine.get_all_chart()
 
 @app.route("/get_chart_analysis")
 def get_chart_analysis():
 
-    mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
-    data = mongodbMachine.find_last_item(db_name="BTC", collection_name="analysis_data")
+
+    arg = request.args.get('currency')
+    data = mongodbMachine.find_last_item(db_name=arg, collection_name="analysis_data")
     
     del data["_id"]
     
@@ -73,7 +77,7 @@ def get_chart_analysis():
 def get_chart():
     arg = request.args.get('currency')
     print(arg)
-    chart_machine = ChartMachine()
+#     chart_machine = ChartMachine()
     result = {}
     if arg == "BTC":
         result = chart_machine.get_all_multiple_chart(db_name=arg)
@@ -85,7 +89,7 @@ def get_chart():
 @app.route("/predicted-value")
 def get_predict_value():
     arg = request.args.get('currency')
-    mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
+    # mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
 
     ret = {}
     data = mongodbMachine.find_last_item(db_name=arg, collection_name="predicted_data")
@@ -117,7 +121,7 @@ def get_all_predict_value():
     for currency in currency_list:
         arg = currency
 
-        mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
+        # mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
 
         ret = {}
         data = mongodbMachine.find_last_item(db_name=arg, collection_name="predicted_data")
@@ -145,6 +149,14 @@ def test_cron():
     soda.save_one_day_data()
 
     return "this is my name"
+
+@app.route("/test_groq")
+def test_groq():
+    groq = GroqMachine()
+    actual_data_str, predicted_data_str = chart_machine.get_analysis_chart(database_name="BTC")
+    res = groq.get_analysis_result(actual_data_str, predicted_data_str)
+
+    return res
 
 if __name__ == "__main__":
     init_code()
