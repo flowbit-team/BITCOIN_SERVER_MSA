@@ -46,7 +46,20 @@ class GroqMachine:
         <|start_header_id|>assistant<|end_header_id|>
         """
 
-        return formatted_prompt
+        gemma_prompt = """
+        <start_of_turn>user
+        너는 가상화폐의 예측 가격과 실제 가격을 가지고 분석해주는 AI 분석 도우미야. 가상화폐 종합정보 사이트를 이용하는 유저에게 분석내용을 공유해줘
+        이번에 분석할 코인의 종류는 {coin_currency}야.
+        다음은 예측 가격들이야. {predicted_data}
+        다음은 실제 가격들이야. {actual_data}
+
+        예측 가격이 실제 가격의 추세를 잘 파악하고 있는지를 분석해줘.
+
+        대답은 한국어로만 작성해줘.<end_of_turn>
+        <start_of_turn>model
+        """
+
+        return gemma_prompt
 
 
     def get_analysis_result(self, actual_data, predicted_data, coin_currency):

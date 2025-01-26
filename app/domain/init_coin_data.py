@@ -11,6 +11,7 @@ server_timezone = timezone('Asia/Seoul')
 
 groqMachine = GroqMachine()
 chartMachine = ChartMachine()
+# groqMachine = GroqMachine()
 
 def pre_data(data):
     result = []
@@ -83,6 +84,9 @@ def init_code():
         #
         # print("insert analysis data to database")
         mongodbMachine.insert_item(data=analysis_data, database_name=database_name, collection_name="analysis_data")
+
+
+
     
     for model_data in modelController.get_model_list():
 

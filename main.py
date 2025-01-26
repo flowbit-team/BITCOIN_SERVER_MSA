@@ -154,7 +154,7 @@ def test_cron():
 def test_groq():
     groq = GroqMachine()
     actual_data_str, predicted_data_str = chart_machine.get_analysis_chart(database_name="BTC")
-    res = groq.get_analysis_result(actual_data_str, predicted_data_str)
+    res = groq.get_analysis_result(actual_data_str, predicted_data_str, "BTC")
 
     return res
 
