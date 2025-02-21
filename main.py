@@ -19,6 +19,7 @@ rest_port= port = int(os.getenv("PORT", 5000))
 app = Flask(__name__)
 chart_machine = ChartMachine()
 mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
+groq = GroqMachine()
 
 @app.route("/")
 def home():
@@ -162,9 +163,10 @@ def test_cron():
 
 @app.route("/test_groq")
 def test_groq():
-    groq = GroqMachine()
+
+
     actual_data_str, predicted_data_str = chart_machine.get_analysis_chart(database_name="BTC")
-    res = groq.get_analysis_result(actual_data_str, predicted_data_str, "BTC")
+    res = groq.get_analysis_result(actual_data_str, predicted_data_str, "BTC", "")
 
     return res
 

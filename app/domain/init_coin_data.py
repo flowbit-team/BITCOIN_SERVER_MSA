@@ -42,11 +42,6 @@ def init_code():
     mongodbMachine.delete_items(condition="ALL", db="AI", collection="define_r2_score")
     mongodbMachine.delete_items(condition="ALL", db="AI", collection="define_news_room")
 
-    tmp_data = {
-        "define_chart" : agent_data["defineChart"],
-        ""
-    }
-
     mongodbMachine.insert_items(
         datas=agent_data["defineChart"],
         database_name="AI",
