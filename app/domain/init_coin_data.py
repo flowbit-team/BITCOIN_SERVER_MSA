@@ -8,6 +8,9 @@ from app.infra.AI.model_controller import ModelController
 import datetime
 from pytz import timezone
 from app.infra.machine.groq_machine import GroqMachine
+import requests
+import re
+import html
 
 server_timezone = timezone('Asia/Seoul')
 
@@ -18,6 +21,33 @@ mongodbMachine = MongoDBHandler(mode="remote", db_name="BTC", collection_name="a
 
 with open('app/conf/config.json') as f:
     config = json.load(f)
+
+def get_head_lines(coin_currency):
+
+    currency_trans_data = config['currencyTrans']
+
+    # API 엔드포인트 URL
+    url = "https://api.flowbit.co.kr/board-service/api/v1/news"
+    coin_currency_kor = next ((currency["kor"] for currency in currency_trans_data if currency["eng"] == coin_currency),
+                              "No matching currency found.")
+
+    # `pageable` 파라미터 설정
+    params = {
+        "page": 0,  # 페이지 번호 (0부터 시작)
+        "size": 10,  # 한 페이지에 포함할 항목 개수
+        "sort": ["ASC"],  # 정렬 기준 (날짜 내림차순)
+        "searchword": "",
+        "tag": coin_currency_kor
+    }
+    # params["tag"] = None
+
+    # GET 요청 보내기
+    response = requests.get(url, params=params)
+    titles_string = [html.unescape(re.sub(r"<.*?>", "", item["title"])) for item in response.json()["data"]["content"]]
+
+    titles = "\n".join(f"헤드라인{i + 1}) {title}" for i, title in enumerate(titles_string))
+    return titles
+
 
 def pre_data(data):
     result = []
@@ -42,23 +72,24 @@ def init_code():
     mongodbMachine.delete_items(condition="ALL", db="AI", collection="define_r2_score")
     mongodbMachine.delete_items(condition="ALL", db="AI", collection="define_news_room")
 
-    mongodbMachine.insert_items(
-        datas=agent_data["defineChart"],
+    print(agent_data)
+    mongodbMachine.insert_item(
+        data=agent_data,
         database_name="AI",
         collection_name="help"
     )
 
-    mongodbMachine.insert_items(
-        datas=agent_data["defineR2Score"],
-        database_name="AI",
-        collection_name="help"
-    )
-
-    mongodbMachine.insert_items(
-        datas=agent_data["defineNewsRoom"],
-        database_name="AI",
-        collection_name="help"
-    )
+    # mongodbMachine.insert_items(
+    #     datas=agent_data["defineR2Score"],
+    #     database_name="AI",
+    #     collection_name="help"
+    # )
+    #
+    # mongodbMachine.insert_items(
+    #     datas=agent_data["defineNewsRoom"],
+    #     database_name="AI",
+    #     collection_name="help"
+    # )
 
     for model_data in modelController.get_model_list():
 
@@ -109,7 +140,11 @@ def init_code():
         actual_data_str, predicted_data_str = chartMachine.get_analysis_chart()
         print(actual_data_str, predicted_data_str)
         # res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
-        res = groqMachine.get_analysis_result(actual_data_str, predicted_data_str, coin_currency=database_name)
+        res = groqMachine.get_analysis_result(
+            actual_data_str,
+            predicted_data_str,
+            database_name,
+            get_head_lines(database_name))
         print(res)
         print("end price analysis")
         #
