@@ -146,14 +146,21 @@ def get_all_predict_value():
     return predicted_value_list
 
 
-# @app.route("/get_agent_help")
-# def get_chart_analysis():
-#
-#     data = mongodbMachine.find_last_item(db_name="AI", collection_name="analysis_data")
-#
-#     del data["_id"]
-#
-#     return data
+@app.route("/get_agent_help")
+def get_ai_agent():
+
+    data = mongodbMachine.find_last_item(
+        db_name="AI",
+        condition= {"current_price":"BTC"},
+        collection_name="analysis_data"
+    )
+
+    print(data)
+
+
+    del data["_id"]
+
+    return data
 
 @app.route("/test_cron")
 def test_cron():
