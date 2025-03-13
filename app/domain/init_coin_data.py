@@ -1,3 +1,5 @@
+import json
+
 from app.infra.machine.bithumb_machine import BithumbMachine
 # from app.infra.machine.chatGPT_machine import ChatMachine
 from app.domain.chart_machine import ChartMachine
@@ -6,11 +8,46 @@ from app.infra.AI.model_controller import ModelController
 import datetime
 from pytz import timezone
 from app.infra.machine.groq_machine import GroqMachine
+import requests
+import re
+import html
 
 server_timezone = timezone('Asia/Seoul')
 
 groqMachine = GroqMachine()
 chartMachine = ChartMachine()
+mongodbMachine = MongoDBHandler(mode="remote", db_name="BTC", collection_name="actual_data")
+# groqMachine = GroqMachine()
+
+with open('app/conf/config.json') as f:
+    config = json.load(f)
+
+def get_head_lines(coin_currency):
+
+    currency_trans_data = config['currencyTrans']
+
+    # API 엔드포인트 URL
+    url = "https://api.flowbit.co.kr/board-service/api/v1/news"
+    coin_currency_kor = next ((currency["kor"] for currency in currency_trans_data if currency["eng"] == coin_currency),
+                              "No matching currency found.")
+
+    # `pageable` 파라미터 설정
+    params = {
+        "page": 0,  # 페이지 번호 (0부터 시작)
+        "size": 10,  # 한 페이지에 포함할 항목 개수
+        "sort": ["ASC"],  # 정렬 기준 (날짜 내림차순)
+        "searchword": "",
+        "tag": coin_currency_kor
+    }
+    # params["tag"] = None
+
+    # GET 요청 보내기
+    response = requests.get(url, params=params)
+    titles_string = [html.unescape(re.sub(r"<.*?>", "", item["title"])) for item in response.json()["data"]["content"]]
+
+    titles = "\n".join(f"헤드라인{i + 1}) {title}" for i, title in enumerate(titles_string))
+    return titles
+
 
 def pre_data(data):
     result = []
@@ -26,6 +63,34 @@ def init_code():
     # chat_machine = ChatMachine()
     bithumbMachine = BithumbMachine()
     modelController = ModelController()
+
+
+    #init agent data
+    agent_data = config["agentData"]
+
+    mongodbMachine.delete_items(condition="ALL", db="AI", collection="define_chart")
+    mongodbMachine.delete_items(condition="ALL", db="AI", collection="define_r2_score")
+    mongodbMachine.delete_items(condition="ALL", db="AI", collection="define_news_room")
+
+    print(agent_data)
+    mongodbMachine.insert_item(
+        data=agent_data,
+        database_name="AI",
+        collection_name="help"
+    )
+
+    # mongodbMachine.insert_items(
+    #     datas=agent_data["defineR2Score"],
+    #     database_name="AI",
+    #     collection_name="help"
+    # )
+    #
+    # mongodbMachine.insert_items(
+    #     datas=agent_data["defineNewsRoom"],
+    #     database_name="AI",
+    #     collection_name="help"
+    # )
+
     for model_data in modelController.get_model_list():
 
         if model_data.get("model_type") != "prev":
@@ -36,7 +101,7 @@ def init_code():
 
         flowbitMachine = model_data.get("model_class")
         database_name = model_data.get("coin_currency")
-        mongodbMachine = MongoDBHandler(mode="remote", db_name=database_name, collection_name="actual_data")
+        # mongodbMachine = MongoDBHandler(mode="remote", db_name=database_name, collection_name="actual_data")
 
         print("start reset database")
         mongodbMachine.delete_items(condition="ALL", db=database_name, collection="actual_data")
@@ -75,14 +140,22 @@ def init_code():
         actual_data_str, predicted_data_str = chartMachine.get_analysis_chart()
         print(actual_data_str, predicted_data_str)
         # res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
-        res = groqMachine.get_analysis_result(actual_data_str, predicted_data_str, coin_currency=database_name)
+        res = groqMachine.get_analysis_result(
+            actual_data_str,
+            predicted_data_str,
+            database_name,
+            get_head_lines(database_name))
         print(res)
         print("end price analysis")
         #
-        analysis_data = {"response": res, "timestamp": datetime.date.today().strftime("%Y-%m-%d")}
+        analysis_data = {"response": res, "timestamp": datetime.date.today().strftime("%Y-%m-%d"), "current_price": database_name}
         #
         # print("insert analysis data to database")
         mongodbMachine.insert_item(data=analysis_data, database_name=database_name, collection_name="analysis_data")
+        mongodbMachine.insert_item(data=analysis_data, database_name="AI", collection_name="analysis_data")
+
+
+
     
     for model_data in modelController.get_model_list():
 
@@ -94,7 +167,7 @@ def init_code():
 
         flowbitMachine = model_data.get("model_class")
         database_name = model_data.get("coin_currency")
-        mongodbMachine = MongoDBHandler(mode="remote", db_name=database_name, collection_name="actual_data")
+        # mongodbMachine = MongoDBHandler(mode="remote", db_name=database_name, collection_name="actual_data")
 
         datas = bithumbMachine.get_all_data(coin_currency=database_name)
         time_step = 60

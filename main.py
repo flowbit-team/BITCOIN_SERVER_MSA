@@ -19,6 +19,7 @@ rest_port= port = int(os.getenv("PORT", 5000))
 app = Flask(__name__)
 chart_machine = ChartMachine()
 mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
+groq = GroqMachine()
 
 @app.route("/")
 def home():
@@ -144,6 +145,23 @@ def get_all_predict_value():
 
     return predicted_value_list
 
+
+@app.route("/get_agent_help")
+def get_ai_agent():
+
+    data = mongodbMachine.find_last_item(
+        db_name="AI",
+        condition= {"current_price":"BTC"},
+        collection_name="analysis_data"
+    )
+
+    print(data)
+
+
+    del data["_id"]
+
+    return data
+
 @app.route("/test_cron")
 def test_cron():
     soda.save_one_day_data()
@@ -152,11 +170,13 @@ def test_cron():
 
 @app.route("/test_groq")
 def test_groq():
-    groq = GroqMachine()
+
+
     actual_data_str, predicted_data_str = chart_machine.get_analysis_chart(database_name="BTC")
-    res = groq.get_analysis_result(actual_data_str, predicted_data_str)
+    res = groq.get_analysis_result(actual_data_str, predicted_data_str, "BTC", "")
 
     return res
+
 
 if __name__ == "__main__":
     init_code()

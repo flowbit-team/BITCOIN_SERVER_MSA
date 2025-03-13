@@ -11,11 +11,44 @@ from app.infra.db.mongodb.mongodb_handler import MongoDBHandler
 from app.infra.machine.groq_machine import GroqMachine
 import datetime
 from pytz import timezone
+import json
+import requests
+import re
+import html
 
 server_timezone = timezone('Asia/Seoul')
 
 groqMachine = GroqMachine()
 chartMachine = ChartMachine()
+
+with open('app/conf/config.json') as f:
+    config = json.load(f)
+
+def get_head_lines(coin_currency):
+
+    currency_trans_data = config['currencyTrans']
+
+    # API 엔드포인트 URL
+    url = "https://api.flowbit.co.kr/board-service/api/v1/news"
+    coin_currency_kor = next ((currency["kor"] for currency in currency_trans_data if currency["eng"] == coin_currency),
+                              "No matching currency found.")
+
+    # `pageable` 파라미터 설정
+    params = {
+        "page": 0,  # 페이지 번호 (0부터 시작)
+        "size": 10,  # 한 페이지에 포함할 항목 개수
+        "sort": ["ASC"],  # 정렬 기준 (날짜 내림차순)
+        "searchword": "",
+        "tag": coin_currency_kor
+    }
+    # params["tag"] = None
+
+    # GET 요청 보내기
+    response = requests.get(url, params=params)
+    titles_string = [html.unescape(re.sub(r"<.*?>", "", item["title"])) for item in response.json()["data"]["content"]]
+
+    titles = "\n".join(f"헤드라인{i + 1}) {title}" for i, title in enumerate(titles_string))
+    return titles
 
 def data_processing(data):
     ret = []
@@ -78,7 +111,7 @@ def save_one_day_data():
         actual_data_str, predicted_data_str = chartMachine.get_analysis_chart()
         print(actual_data_str, predicted_data_str)
         # res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
-        res = groqMachine.get_analysis_result(actual_data_str, predicted_data_str, database_name)
+        res = groqMachine.get_analysis_result(actual_data_str, predicted_data_str, database_name, get_head_lines(database_name))
         print("end price analysis")
         #
         analysis_data = {"response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
