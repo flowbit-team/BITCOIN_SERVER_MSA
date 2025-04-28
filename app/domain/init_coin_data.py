@@ -72,7 +72,7 @@ def init_code():
     mongodbMachine.delete_items(condition="ALL", db="AI", collection="define_r2_score")
     mongodbMachine.delete_items(condition="ALL", db="AI", collection="define_news_room")
 
-    print(agent_data)
+    # print(agent_data)
     mongodbMachine.insert_item(
         data=agent_data,
         database_name="AI",
@@ -140,12 +140,14 @@ def init_code():
         actual_data_str, predicted_data_str = chartMachine.get_analysis_chart()
         print(actual_data_str, predicted_data_str)
         # res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
+        print("start get LLM analysis")
         res = groqMachine.get_analysis_result(
             actual_data_str,
             predicted_data_str,
             database_name,
             get_head_lines(database_name))
-        print(res)
+        # print(res)
+        print("end get LLM analysis")
         print("end price analysis")
         #
         analysis_data = {"response": res, "timestamp": datetime.date.today().strftime("%Y-%m-%d"), "current_price": database_name}

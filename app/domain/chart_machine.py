@@ -18,7 +18,7 @@ class ChartMachine:
         predicted_data_str = ''
 
         for i in actual_data:
-            print("일단 여기까지 옴...")
+            # print("일단 여기까지 옴...")
             i["_id"] = str(i["_id"])
             actual_data_str += str(i["close_price"]) + ","
 
@@ -128,7 +128,7 @@ class ChartMachine:
             predicted_data_list.append(i["predicted_price"])
 
         for i in multiple_predicted_data.get("predicted_data"):
-            print(i)
+            # print(i)
             lables.append(i["timestamp"])
             predicted_data_list.append(i["predicted_price"])
 
