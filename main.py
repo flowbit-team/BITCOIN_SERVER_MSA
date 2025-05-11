@@ -149,9 +149,11 @@ def get_all_predict_value():
 @app.route("/get_agent_help")
 def get_ai_agent():
 
+    arg = request.args.get('currency')
+
     data = mongodbMachine.find_last_item(
         db_name="AI",
-        condition= {"current_price":"BTC"},
+        condition= {"current_price":arg},
         collection_name="analysis_data"
     )
 

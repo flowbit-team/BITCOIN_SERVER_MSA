@@ -226,7 +226,7 @@ class MongoDBHandler(DBHandler):
             self._db = self._client[db_name]
         if collection_name is not None:
             self._collection = self._db[collection_name]
-        return self._collection.find_one(sort=[("_id", -1)])
+        return self._collection.find_one(condition, sort=[("timestamp", -1)])
 
     def delete_items(self, condition=None, db=None, collection=None):
         """
