@@ -141,7 +141,7 @@ def init_code():
         print(actual_data_str, predicted_data_str)
         # res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
         print("start get LLM analysis")
-        res = groqMachine.get_analysis_result(
+        recommendation_res = groqMachine.get_recommendation_result(
             actual_data_str,
             predicted_data_str,
             database_name,
@@ -150,12 +150,15 @@ def init_code():
         print("end get LLM analysis")
         print("end price analysis")
         #
-        analysis_data = {"response": res, "timestamp": datetime.date.today().strftime("%Y-%m-%d"), "current_price": database_name}
+        recommendation_data = {"response": recommendation_res, "timestamp": datetime.date.today().strftime("%Y-%m-%d"), "current_price": database_name}
         #
         # print("insert analysis data to database")
-        mongodbMachine.insert_item(data=analysis_data, database_name=database_name, collection_name="analysis_data")
-        mongodbMachine.insert_item(data=analysis_data, database_name="AI", collection_name="analysis_data")
+        mongodbMachine.insert_item(data=recommendation_data, database_name="AI", collection_name="recommendation_data")
+        # mongodbMachine.insert_item(data=recommendation_data, database_name="AI", collection_name="recommendation_data")
 
+        analysis_res = groqMachine.get_analysis_result(actual_data_str, predicted_data_str, database_name)
+        analysis_data = {"response": analysis_res, "timestamp": datetime.date.today().strftime("%Y-%m-%d"),"current_price": database_name}
+        mongodbMachine.insert_item(data=analysis_data, database_name="AI",collection_name="analysis_data")
 
 
     

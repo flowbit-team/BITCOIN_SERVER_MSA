@@ -111,13 +111,18 @@ def save_one_day_data():
         actual_data_str, predicted_data_str = chartMachine.get_analysis_chart()
         print(actual_data_str, predicted_data_str)
         # res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
-        res = groqMachine.get_analysis_result(actual_data_str, predicted_data_str, database_name, get_head_lines(database_name))
+        recommendation_res = groqMachine.get_recommendation_result(actual_data_str, predicted_data_str, database_name, get_head_lines(database_name))
         print("end price analysis")
         #
-        analysis_data = {"response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
+        recommendation_data = {"response":recommendation_res, "timestamp":datetime.date.today().strftime("%Y-%m-%d"),"current_price": database_name}
         #
         # print("insert analysis data to database")
-        mongodbMachine.insert_item(data = analysis_data, database_name=database_name, collection_name="analysis_data")
+        mongodbMachine.insert_item(data = recommendation_data, database_name="AI", collection_name="recommendation_data")
+
+        analysis_res = groqMachine.get_analysis_result(actual_data_str, predicted_data_str, database_name)
+        analysis_data = {"response": analysis_res, "timestamp": datetime.date.today().strftime("%Y-%m-%d"),"current_price": database_name}
+        mongodbMachine.insert_item(data=analysis_data, database_name="AI",
+                                   collection_name="analysis_data")
 
     #todo: one day ai 부분 객체로 바꾸기
     for model_data in modelController.get_model_list():
