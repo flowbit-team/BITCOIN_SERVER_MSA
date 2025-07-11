@@ -146,12 +146,31 @@ def get_all_predict_value():
     return predicted_value_list
 
 
-@app.route("/get_agent_help")
-def get_ai_agent():
+@app.route("/get_ai_agent_recommendation_data")
+def get_ai_agent_recommendation_data():
 
     arg = request.args.get('currency')
 
-    data = mongodbMachine.find_last_item(
+    data = mongodbMachine.find_last_item_by_id(
+        db_name="AI",
+        condition= {"current_price":arg},
+        collection_name="recommendation_data"
+    )
+
+    print(data)
+
+
+    del data["_id"]
+
+    return data
+
+
+@app.route("/get_ai_agent_analysis_data")
+def get_ai_agent_analysis_data():
+
+    arg = request.args.get('currency')
+
+    data = mongodbMachine.find_last_item_by_id(
         db_name="AI",
         condition= {"current_price":arg},
         collection_name="analysis_data"
@@ -175,7 +194,7 @@ def test_groq():
 
 
     actual_data_str, predicted_data_str = chart_machine.get_analysis_chart(database_name="BTC")
-    res = groq.get_analysis_result(actual_data_str, predicted_data_str, "BTC", "")
+    res = groq.get_recommendation_result(actual_data_str, predicted_data_str, "BTC", "")
 
     return res
 
